@@ -4,6 +4,8 @@ using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
+using TestNinja.Mocking;
+
 
 namespace TestNinja.Mocking
 {
@@ -11,7 +13,7 @@ namespace TestNinja.Mocking
     {
         public string ReadVideoTitle()
         {
-            var str = File.ReadAllText("video.txt");
+            var str = new FileReader().Read("video.txt");
             var video = JsonConvert.DeserializeObject<Video>(str);
             if (video == null)
                 return "Error parsing the video.";
