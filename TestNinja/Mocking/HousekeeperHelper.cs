@@ -3,6 +3,7 @@ using System.IO;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
+using TestNinja.Mocking;
 
 namespace TestNinja.Mocking
 {
