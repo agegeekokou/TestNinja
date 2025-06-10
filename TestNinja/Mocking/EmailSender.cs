@@ -40,7 +40,6 @@ namespace TestNinja.Mocking
             message.Dispose();
 
             File.Delete(filename);
-        }
-        
+        }      
     }
 }

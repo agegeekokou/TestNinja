@@ -1,20 +1,21 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
+using TestNinja.Mocking;
 
 namespace TestNinja.Mocking
 {
-    public class HouseKeeperService
+    public class HousekeeperService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IStatementGenerator _statementGenerator;
         private readonly IEmailSender _emailSender;
         private readonly IXtraMessageBox _messageBox;
 
-        public HouseKeeperService(
-            IUnitOfWork unitOfWork, 
+        public HousekeeperService(IUnitOfWork unitOfWork,
             IStatementGenerator statementGenerator,
             IEmailSender emailSender,
             IXtraMessageBox messageBox)
@@ -24,15 +25,15 @@ namespace TestNinja.Mocking
             _emailSender = emailSender;
             _messageBox = messageBox;
         }
-        
+
         public void SendStatementEmails(DateTime statementDate)
         {
             var housekeepers = _unitOfWork.Query<Housekeeper>();
 
             foreach (var housekeeper in housekeepers)
             {
-                if (String.IsNullOrWhiteSpace(housekeeper.Email)) 
-                    continue;
+                if (housekeeper.Email == null)
+                    continue; 
 
                 var statementFilename = _statementGenerator.SaveStatement(housekeeper.Oid, housekeeper.FullName, statementDate);
 
@@ -56,6 +57,11 @@ namespace TestNinja.Mocking
         }
     }
 
+    public interface IUnitOfWork
+    {
+        IQueryable<T> Query<T>();
+    }
+
     public enum MessageBoxButtons
     {
         OK
@@ -66,9 +72,9 @@ namespace TestNinja.Mocking
         void Show(string s, string housekeeperStatements, MessageBoxButtons ok);
     }
 
-    public class XtraMessageBox : IXtraMessageBox
+    public class XtraMessageBox
     {
-        public void Show(string s, string housekeeperStatements, MessageBoxButtons ok)
+        public static void Show(string s, string housekeeperStatements, MessageBoxButtons ok)
         {
         }
     }
